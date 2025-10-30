@@ -69,6 +69,38 @@
 
         .success { color: #4CAF50; }
         .error { color: #f44336; }
+        
+        .success-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            z-index: 10;
+            max-width: 80%;
+            border: 3px solid #4CAF50;
+        }
+        
+        .success-title {
+            font-size: 24px;
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+        
+        .success-text {
+            font-size: 18px;
+            line-height: 1.4;
+            color: #333;
+        }
+        
+        .bear-emoji {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -80,6 +112,11 @@
 
     <div class="game-container">
         <canvas id="gameCanvas" width="600" height="500"></canvas>
+        <div id="successMessage" class="success-message" style="display: none;">
+            <div class="bear-emoji">🐻</div>
+            <div class="success-title">Поздравляем!</div>
+            <div class="success-text">Молодец, ты пробурил скважину и помог медвежонку найти нефть! Ты успешно выполнил все задания и теперь знаешь, кто такой нефтяник-бурильщик!</div>
+        </div>
     </div>
 
     <div class="controls">
@@ -93,6 +130,7 @@
         const messageEl = document.getElementById('message');
         const startBtn = document.getElementById('startBtn');
         const resetBtn = document.getElementById('resetBtn');
+        const successMessageEl = document.getElementById('successMessage');
 
         // Константы игры
         const CELL_SIZE = 20;
@@ -123,6 +161,7 @@
             drillPosition = { x: Math.floor(GRID_WIDTH / 2), y: 0 };
             drillPath = [{ x: drillPosition.x, y: drillPosition.y }];
             stones = generateStones();
+            successMessageEl.style.display = 'none';
             drawGame();
             showMessage('Нажмите "Начать бурение" и используйте стрелки для управления');
         }
@@ -255,6 +294,7 @@
                 showMessage('🎉 Нефть найдена! Вы победили!', 'success');
                 drillPath.push({ x: newX, y: newY });
                 drawGame();
+                showSuccessMessage();
                 return;
             }
             
@@ -264,6 +304,11 @@
             drillPath.push({ x: newX, y: newY });
             
             drawGame();
+        }
+
+        // Показать сообщение об успехе
+        function showSuccessMessage() {
+            successMessageEl.style.display = 'block';
         }
 
         // Управление с клавиатуры
@@ -301,7 +346,6 @@
             if (gameState === 'idle') {
                 gameState = 'drilling';
                 startBtn.disabled = true;
-                showMessage('Можете приступать к бурению!');
             }
         }
 
@@ -316,4 +360,3 @@
     </script>
 </body>
 </html>
-
