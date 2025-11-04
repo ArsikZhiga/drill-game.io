@@ -308,10 +308,165 @@
             color: #ffd700;
             font-weight: bold;
         }
+
+        /* Стили для начального экрана */
+        .start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a2a6c, #2a4d8c);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .start-content {
+            background: linear-gradient(135deg, #2d3047, #1b2a41);
+            padding: 40px;
+            border-radius: 20px;
+            border: 3px solid #ffd700;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .start-title {
+            font-size: 3em;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .start-subtitle {
+            font-size: 1.5em;
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .tutorial-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 2px solid #ff6b35;
+        }
+
+        .tutorial-title {
+            color: #ffd700;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .tutorial-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border-left: 4px solid #ff6b35;
+        }
+
+        .tutorial-icon {
+            font-size: 2em;
+            margin-right: 15px;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .tutorial-text {
+            text-align: left;
+            font-size: 1.1em;
+            line-height: 1.4;
+        }
+
+        .start-button {
+            padding: 18px 40px;
+            font-size: 1.4em;
+            background: linear-gradient(135deg, #ff6b35, #ff8e35);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid #ffd700;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            margin-top: 20px;
+        }
+
+        .start-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.6);
+            background: linear-gradient(135deg, #ff8e35, #ff6b35);
+        }
+
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
-    <div class="game-wrapper">
+    <!-- Начальный экран -->
+    <div id="startScreen" class="start-screen">
+        <div class="start-content">
+            <div class="start-title">🚀 НЕФТЕБУР MANIA</div>
+            <div class="start-subtitle">Стань лучшим бурильщиком!</div>
+            
+            <div class="tutorial-section">
+                <div class="tutorial-title">🎮 Как играть:</div>
+                
+                <div class="tutorial-item">
+                    <div class="tutorial-icon">🎯</div>
+                    <div class="tutorial-text">
+                        <strong>Цель игры:</strong> Пробури скважину к нефтяному озеру внизу
+                    </div>
+                </div>
+                
+                <div class="tutorial-item">
+                    <div class="tutorial-icon">⬆️⬇️⬅️➡️</div>
+                    <div class="tutorial-text">
+                        <strong>Управление:</strong> Используй стрелки на клавиатуре для движения бура
+                    </div>
+                </div>
+                
+                <div class="tutorial-item">
+                    <div class="tutorial-icon">💥</div>
+                    <div class="tutorial-text">
+                        <strong>Разрушай камни:</strong> Твой бур может пробиваться через камни, но теряет мощность
+                    </div>
+                </div>
+                
+                <div class="tutorial-item">
+                    <div class="tutorial-icon">⚡</div>
+                    <div class="tutorial-text">
+                        <strong>Следи за мощностью:</strong> Если мощность упадет до нуля - бур сломается!
+                    </div>
+                </div>
+                
+                <div class="tutorial-item">
+                    <div class="tutorial-icon">⛽</div>
+                    <div class="tutorial-text">
+                        <strong>Доберись до нефти:</strong> Как только достигнешь синего нефтяного озера - победа!
+                    </div>
+                </div>
+            </div>
+
+            <button class="start-button" onclick="startGame()">
+                🎯 НАЧАТЬ БУРЕНИЕ!
+            </button>
+        </div>
+    </div>
+
+    <div class="game-wrapper hidden" id="gameWrapper">
         <div class="header">
             <h1>🚀 НЕФТЕБУР MANIA</h1>
             <p>Пробури скважину к нефти! Бур может разрушать камни!</p>
@@ -403,6 +558,8 @@
         const depthTextEl = document.getElementById('depthText');
         const powerFillEl = document.getElementById('powerFill');
         const powerTextEl = document.getElementById('powerText');
+        const startScreen = document.getElementById('startScreen');
+        const gameWrapper = document.getElementById('gameWrapper');
 
         // Константы игры
         const CELL_SIZE = 25;
@@ -428,6 +585,15 @@
             pathGlow: '#FFA500',
             crackedStone: '#8B4513'
         };
+
+        // Запуск игры (с начального экрана)
+        function startGame() {
+            startScreen.classList.add('hidden');
+            gameWrapper.classList.remove('hidden');
+            resizeCanvas();
+            initGame();
+            showMessage('Готов к бурению! Нажми "НАЧАТЬ БУРЕНИЕ"', '');
+        }
 
         // Размеры холста
         function resizeCanvas() {
@@ -462,7 +628,6 @@
             successMessageEl.style.display = 'none';
             updateStats();
             drawGame();
-            showMessage('Готов к бурению! Бур может разрушать камни!', '');
         }
 
         // Генерация камней
@@ -802,13 +967,7 @@
             startBtn.disabled = false;
         }
 
-        // Запуск игры
-        window.onload = function() {
-            resizeCanvas();
-            initGame();
-            showMessage('СИСТЕМА ГОТОВА! Нажми "НАЧАТЬ БУРЕНИЕ"', '');
-        };
-
+        // Обработчик изменения размера окна
         window.addEventListener('resize', resizeCanvas);
     </script>
 </body>
