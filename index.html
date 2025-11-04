@@ -3,125 +3,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>НефтеБур</title>
+    <title>НефтеБур Mania</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            background: linear-gradient(135deg, #1a2a6c, #2a4d8c, #3a6fd4);
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            color: white;
+        }
+
+        .game-wrapper {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            background: linear-gradient(to bottom, #87CEEB, #1E90FF);
-            font-family: Arial, sans-serif;
+            height: 100vh;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            padding: 10px 0;
+            background: linear-gradient(135deg, #ff6b35, #ff8e35);
+            margin-bottom: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 2px solid #ffd700;
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 1.3em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            color: #fff8dc;
+        }
+
+        .game-area {
+            display: flex;
+            flex: 1;
+            gap: 15px;
         }
 
         .game-container {
+            flex: 1;
             position: relative;
-            margin: 20px 0;
+            background: #1a1a2e;
+            border-radius: 15px;
+            border: 3px solid #ffd700;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+            overflow: hidden;
         }
 
         #gameCanvas {
-            border: 3px solid #8B4513;
-            background: #DEB887;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            width: 100%;
+            height: 100%;
+            display: block;
         }
 
-        .info-panel {
-            background: rgba(255,255,255,0.9);
+        .side-panel {
+            width: 250px;
+            background: linear-gradient(135deg, #2d3047, #1b2a41);
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .info-box {
+            background: rgba(255, 255, 255, 0.1);
             padding: 15px;
             border-radius: 10px;
+            border: 1px solid #ffd700;
+        }
+
+        .info-box h3 {
+            color: #ffd700;
             margin-bottom: 10px;
+            font-size: 1.2em;
             text-align: center;
-            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .stats {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9em;
+        }
+
+        .stat-value {
+            color: #ffd700;
+            font-weight: bold;
         }
 
         .controls {
-            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        button {
-            padding: 10px 20px;
-            margin: 0 5px;
-            font-size: 16px;
-            cursor: pointer;
-            background: #4CAF50;
+        .control-btn {
+            padding: 12px;
+            font-size: 1.1em;
+            background: linear-gradient(135deg, #ff6b35, #ff8e35);
             color: white;
             border: none;
-            border-radius: 5px;
-            transition: background 0.3s;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #ffd700;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
-        button:hover {
-            background: #45a049;
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+            background: linear-gradient(135deg, #ff8e35, #ff6b35);
         }
 
-        button:disabled {
-            background: #cccccc;
+        .control-btn:disabled {
+            background: linear-gradient(135deg, #666, #888);
+            border-color: #999;
+            transform: none;
+            box-shadow: none;
             cursor: not-allowed;
         }
 
         .message {
-            margin-top: 10px;
-            font-size: 18px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #ffd700;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: bold;
-            min-height: 25px;
         }
 
-        .success { color: #4CAF50; }
-        .error { color: #f44336; }
-        
+        .success { 
+            color: #4CAF50;
+            border-color: #4CAF50;
+        }
+        .error { 
+            color: #ff4444;
+            border-color: #ff4444;
+        }
+
         .success-message {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 15px;
+            background: linear-gradient(135deg, #1a2a6c, #2a4d8c);
+            padding: 40px;
+            border-radius: 20px;
             text-align: center;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5);
             z-index: 10;
-            max-width: 80%;
-            border: 3px solid #4CAF50;
+            max-width: 500px;
+            border: 3px solid #ffd700;
+            backdrop-filter: blur(10px);
         }
         
         .success-title {
-            font-size: 24px;
-            color: #4CAF50;
-            margin-bottom: 15px;
+            font-size: 2em;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         
         .success-text {
-            font-size: 18px;
-            line-height: 1.4;
-            color: #333;
+            font-size: 1.3em;
+            line-height: 1.5;
+            color: white;
+            margin-bottom: 20px;
         }
         
         .bear-emoji {
-            font-size: 40px;
+            font-size: 4em;
+            margin-bottom: 20px;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
+        }
+
+        .depth-meter {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+        }
+
+        .depth-title {
+            color: #ffd700;
+            text-align: center;
             margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .depth-bar {
+            height: 20px;
+            background: #2d3047;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #ff6b35;
+        }
+
+        .depth-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b35, #ffd700);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .depth-value {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 1.1em;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #ffd700;
+            font-size: 0.9em;
+        }
+
+        .instructions h4 {
+            color: #ffd700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .key {
+            display: inline-block;
+            background: #ff6b35;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin: 0 2px;
+            font-weight: bold;
+            border: 1px solid #ffd700;
+        }
+
+        .drill-power {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ffd700;
+        }
+
+        .drill-power-title {
+            color: #ffd700;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .power-bar {
+            height: 20px;
+            background: #2d3047;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #ff6b35;
+        }
+
+        .power-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00);
+            width: 100%;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .power-value {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 1.1em;
+            color: #ffd700;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="info-panel">
-        <h1>🚀 НефтеБур</h1>
-        <p>Пробурите скважину к нефти, избегая камней!</p>
-        <div class="message" id="message"></div>
-    </div>
-
-    <div class="game-container">
-        <canvas id="gameCanvas" width="600" height="500"></canvas>
-        <div id="successMessage" class="success-message" style="display: none;">
-            <div class="bear-emoji">🐻</div>
-            <div class="success-title">Поздравляем!</div>
-            <div class="success-text">Молодец, ты пробурил скважину и помог медвежонку найти нефть! Ты успешно выполнил все задания и теперь знаешь, кто такой нефтяник-бурильщик!</div>
+    <div class="game-wrapper">
+        <div class="header">
+            <h1>🚀 НЕФТЕБУР MANIA</h1>
+            <p>Пробури скважину к нефти! Бур может разрушать камни!</p>
         </div>
-    </div>
+        
+        <div class="game-area">
+            <div class="game-container">
+                <canvas id="gameCanvas"></canvas>
+                <div id="successMessage" class="success-message" style="display: none;">
+                    <div class="bear-emoji">🐻</div>
+                    <div class="success-title">УРОВЕНЬ ПРОЙДЕН!</div>
+                    <div class="success-text">Молодец, ты пробурил скважину и помог медвежонку найти нефть! Ты успешно выполнил все задания и теперь знаешь, кто такой нефтяник-бурильщик!</div>
+                </div>
+            </div>
+            
+            <div class="side-panel">
+                <div class="info-box">
+                    <h3>📊 СТАТИСТИКА</h3>
+                    <div class="stats">
+                        <div class="stat">
+                            <span>Глубина:</span>
+                            <span id="depthValue" class="stat-value">0m</span>
+                        </div>
+                        <div class="stat">
+                            <span>Пройдено:</span>
+                            <span id="progressValue" class="stat-value">0%</span>
+                        </div>
+                        <div class="stat">
+                            <span>Камней:</span>
+                            <span id="stonesCount" class="stat-value">0</span>
+                        </div>
+                        <div class="stat">
+                            <span>Разрушено:</span>
+                            <span id="destroyedCount" class="stat-value">0</span>
+                        </div>
+                        <div class="stat">
+                            <span>Статус:</span>
+                            <span id="statusValue" class="stat-value">Готов</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="depth-meter">
+                    <div class="depth-title">📏 ГЛУБИНОМЕР</div>
+                    <div class="depth-bar">
+                        <div class="depth-fill" id="depthFill"></div>
+                    </div>
+                    <div class="depth-value" id="depthText">0m / 0m</div>
+                </div>
 
-    <div class="controls">
-        <button onclick="startDrilling()" id="startBtn">Начать бурение</button>
-        <button onclick="resetGame()" id="resetBtn">Новая игра</button>
+                <div class="drill-power">
+                    <div class="drill-power-title">⚡ МОЩНОСТЬ БУРА</div>
+                    <div class="power-bar">
+                        <div class="power-fill" id="powerFill"></div>
+                    </div>
+                    <div class="power-value" id="powerText">СУПЕР БУР!</div>
+                </div>
+                
+                <div class="controls">
+                    <button class="control-btn" onclick="startDrilling()" id="startBtn">▶ НАЧАТЬ БУРЕНИЕ</button>
+                    <button class="control-btn" onclick="resetGame()" id="resetBtn">🔄 НОВАЯ ИГРА</button>
+                </div>
+                
+                <div class="message" id="message">Готов к бурению! Бур может разрушать камни!</div>
+                
+                <div class="instructions">
+                    <h4>🎮 УПРАВЛЕНИЕ</h4>
+                    <p>Используй стрелки <span class="key">←</span><span class="key">↑</span><span class="key">↓</span><span class="key">→</span> для движения бура</p>
+                    <p>Бур разрушает камни! 💥</p>
+                    <p>Доберись до нефти ⛽</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -131,29 +394,61 @@
         const startBtn = document.getElementById('startBtn');
         const resetBtn = document.getElementById('resetBtn');
         const successMessageEl = document.getElementById('successMessage');
+        const depthValueEl = document.getElementById('depthValue');
+        const progressValueEl = document.getElementById('progressValue');
+        const stonesCountEl = document.getElementById('stonesCount');
+        const destroyedCountEl = document.getElementById('destroyedCount');
+        const statusValueEl = document.getElementById('statusValue');
+        const depthFillEl = document.getElementById('depthFill');
+        const depthTextEl = document.getElementById('depthText');
+        const powerFillEl = document.getElementById('powerFill');
+        const powerTextEl = document.getElementById('powerText');
 
         // Константы игры
-        const CELL_SIZE = 20;
-        const GRID_WIDTH = Math.floor(canvas.width / CELL_SIZE);
-        const GRID_HEIGHT = Math.floor(canvas.height / CELL_SIZE);
+        const CELL_SIZE = 25;
+        let GRID_WIDTH, GRID_HEIGHT;
         
         // Игровые переменные
-        let gameState = 'idle'; // 'idle', 'drilling', 'success', 'failed'
-        let drillPosition = { x: GRID_WIDTH / 2, y: 0 };
+        let gameState = 'idle';
+        let drillPosition = { x: 0, y: 0 };
         let drillPath = [];
         let stones = [];
-        let oilLake = { y: GRID_HEIGHT - 5, height: 5 };
+        let destroyedStones = 0;
+        let oilLake = { y: 0, height: 8 };
+        let maxDepth = 0;
+        let drillPower = 100;
 
         // Цвета
         const COLORS = {
-            background: '#DEB887',
             earth: '#8B4513',
-            stone: '#696969',
-            oil: '#2F4F4F',
-            oilLake: '#000080',
-            drill: '#FF0000',
-            path: '#FFFF00'
+            stone: '#5D6D7E',
+            oilLake: '#1B4F72',
+            drill: '#FF6B35',
+            path: '#FFD700',
+            pathGlow: '#FFA500',
+            crackedStone: '#8B4513'
         };
+
+        // Размеры холста
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            
+            GRID_WIDTH = Math.floor(canvas.width / CELL_SIZE);
+            GRID_HEIGHT = Math.floor(canvas.height / CELL_SIZE);
+            
+            oilLake.y = GRID_HEIGHT - oilLake.height;
+            if (gameState === 'idle') {
+                drillPosition.x = Math.floor(GRID_WIDTH / 2);
+                drillPosition.y = 0;
+                drillPath = [{ x: drillPosition.x, y: drillPosition.y }];
+                stones = generateStones();
+            }
+            
+            updateStats();
+            drawGame();
+        }
 
         // Инициализация игры
         function initGame() {
@@ -161,15 +456,19 @@
             drillPosition = { x: Math.floor(GRID_WIDTH / 2), y: 0 };
             drillPath = [{ x: drillPosition.x, y: drillPosition.y }];
             stones = generateStones();
+            destroyedStones = 0;
+            maxDepth = 0;
+            drillPower = 100;
             successMessageEl.style.display = 'none';
+            updateStats();
             drawGame();
-            showMessage('Нажмите "Начать бурение" и используйте стрелки для управления');
+            showMessage('Готов к бурению! Бур может разрушать камни!', '');
         }
 
         // Генерация камней
         function generateStones() {
             const stones = [];
-            const numStones = Math.floor(GRID_WIDTH * GRID_HEIGHT * 0.15); // 15% поля
+            const numStones = Math.floor(GRID_WIDTH * GRID_HEIGHT * 0.2);
             
             for (let i = 0; i < numStones; i++) {
                 let stone;
@@ -178,11 +477,12 @@
                 do {
                     stone = {
                         x: Math.floor(Math.random() * GRID_WIDTH),
-                        y: Math.floor(Math.random() * (GRID_HEIGHT - oilLake.height - 10)) + 5
+                        y: Math.floor(Math.random() * (GRID_HEIGHT - oilLake.height - 10)) + 5,
+                        health: 3
                     };
                     attempts++;
                 } while (
-                    (stone.x === drillPosition.x && stone.y === drillPosition.y) ||
+                    (Math.abs(stone.x - drillPosition.x) < 2 && stone.y < 8) ||
                     stones.some(s => s.x === stone.x && s.y === stone.y) ||
                     attempts > 100
                 );
@@ -195,80 +495,211 @@
             return stones;
         }
 
+        // Обновление статистики
+        function updateStats() {
+            const currentDepth = drillPosition.y * CELL_SIZE;
+            const totalDepth = oilLake.y * CELL_SIZE;
+            const progress = Math.min(100, Math.floor((currentDepth / totalDepth) * 100));
+            
+            depthValueEl.textContent = `${currentDepth}m`;
+            progressValueEl.textContent = `${progress}%`;
+            stonesCountEl.textContent = stones.length;
+            destroyedCountEl.textContent = destroyedStones;
+            
+            // Обновление глубиномера
+            const depthPercent = Math.min(100, (currentDepth / totalDepth) * 100);
+            depthFillEl.style.width = `${depthPercent}%`;
+            depthTextEl.textContent = `${currentDepth}m / ${totalDepth}m`;
+            
+            // Обновление мощности бура
+            powerFillEl.style.width = `${drillPower}%`;
+            
+            if (drillPower >= 80) {
+                powerTextEl.textContent = 'СУПЕР БУР!';
+                powerFillEl.style.background = 'linear-gradient(90deg, #00ff00, #ffff00)';
+            } else if (drillPower >= 50) {
+                powerTextEl.textContent = 'ХОРОШО';
+                powerFillEl.style.background = 'linear-gradient(90deg, #ffff00, #ff9900)';
+            } else if (drillPower >= 20) {
+                powerTextEl.textContent = 'СЛАБО';
+                powerFillEl.style.background = 'linear-gradient(90deg, #ff9900, #ff0000)';
+            } else {
+                powerTextEl.textContent = 'КРИТИЧЕСКО!';
+                powerFillEl.style.background = 'linear-gradient(90deg, #ff0000, #800000)';
+            }
+            
+            // Обновление статуса
+            switch(gameState) {
+                case 'idle': statusValueEl.textContent = 'Готов'; break;
+                case 'drilling': statusValueEl.textContent = 'Бурение...'; break;
+                case 'success': statusValueEl.textContent = 'Успех!'; break;
+                case 'failed': statusValueEl.textContent = 'Авария!'; break;
+            }
+            
+            if (currentDepth > maxDepth) {
+                maxDepth = currentDepth;
+            }
+        }
+
         // Отрисовка игры
         function drawGame() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Рисуем фон (землю)
+            // Фон земли
             ctx.fillStyle = COLORS.earth;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Рисуем озеро нефти
-            ctx.fillStyle = COLORS.oilLake;
+            // Озеро нефти
+            const oilGradient = ctx.createLinearGradient(0, oilLake.y * CELL_SIZE, 0, canvas.height);
+            oilGradient.addColorStop(0, '#1B4F72');
+            oilGradient.addColorStop(1, '#0D2F4F');
+            ctx.fillStyle = oilGradient;
             ctx.fillRect(0, oilLake.y * CELL_SIZE, canvas.width, oilLake.height * CELL_SIZE);
             
-            // Рисуем нефтекачалку
+            // Нефтекачалка
             drawOilRig();
             
-            // Рисуем камни
+            // Камни
             stones.forEach(stone => {
-                ctx.fillStyle = COLORS.stone;
+                // Основной цвет камня
+                ctx.fillStyle = stone.health === 3 ? COLORS.stone : 
+                              stone.health === 2 ? '#7D8CA0' : '#9BA8B5';
                 ctx.fillRect(stone.x * CELL_SIZE, stone.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
                 
-                // Текстура камня
-                ctx.strokeStyle = '#555';
-                ctx.lineWidth = 1;
+                // Контур
+                ctx.strokeStyle = '#34495E';
+                ctx.lineWidth = 2;
                 ctx.strokeRect(stone.x * CELL_SIZE, stone.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                
+                // Трещины
+                if (stone.health < 3) {
+                    ctx.strokeStyle = COLORS.crackedStone;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    
+                    if (stone.health === 2) {
+                        ctx.moveTo(stone.x * CELL_SIZE + 5, stone.y * CELL_SIZE + 5);
+                        ctx.lineTo(stone.x * CELL_SIZE + CELL_SIZE - 5, stone.y * CELL_SIZE + CELL_SIZE - 5);
+                    } else if (stone.health === 1) {
+                        ctx.moveTo(stone.x * CELL_SIZE + 5, stone.y * CELL_SIZE + 5);
+                        ctx.lineTo(stone.x * CELL_SIZE + CELL_SIZE - 5, stone.y * CELL_SIZE + CELL_SIZE - 5);
+                        ctx.moveTo(stone.x * CELL_SIZE + CELL_SIZE - 5, stone.y * CELL_SIZE + 5);
+                        ctx.lineTo(stone.x * CELL_SIZE + 5, stone.y * CELL_SIZE + CELL_SIZE - 5);
+                    }
+                    ctx.stroke();
+                }
             });
             
-            // Рисуем путь бура
+            // Путь бура
             drawDrillPath();
             
-            // Рисуем бур
+            // Бур (увеличенный)
+            const drillSize = CELL_SIZE * 1.8;
+            const offset = (drillSize - CELL_SIZE) / 2;
+            
+            // Свечение
+            ctx.shadowColor = drillPower >= 50 ? '#FF6B35' : '#FF0000';
+            ctx.shadowBlur = 15;
             ctx.fillStyle = COLORS.drill;
-            ctx.fillRect(drillPosition.x * CELL_SIZE, drillPosition.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+            ctx.fillRect(
+                drillPosition.x * CELL_SIZE - offset, 
+                drillPosition.y * CELL_SIZE - offset, 
+                drillSize, drillSize
+            );
+            ctx.shadowBlur = 0;
+            
+            // Основной бур
+            ctx.fillStyle = COLORS.drill;
+            ctx.fillRect(
+                drillPosition.x * CELL_SIZE - offset, 
+                drillPosition.y * CELL_SIZE - offset, 
+                drillSize, drillSize
+            );
+            
+            // Эффект вращения
+            if (gameState === 'drilling') {
+                ctx.strokeStyle = '#FFD700';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(
+                    drillPosition.x * CELL_SIZE + CELL_SIZE/2,
+                    drillPosition.y * CELL_SIZE + CELL_SIZE/2,
+                    drillSize/2 + 3,
+                    0, Math.PI * 2
+                );
+                ctx.stroke();
+            }
         }
 
         // Рисуем нефтекачалку
         function drawOilRig() {
             const x = drillPosition.x * CELL_SIZE;
+            const rigWidth = CELL_SIZE * 2.5;
             
             // Основание
-            ctx.fillStyle = '#36454F';
-            ctx.fillRect(x - 10, 0, 30, 20);
+            ctx.fillStyle = '#2C3E50';
+            ctx.fillRect(x - rigWidth/2, 0, rigWidth, CELL_SIZE * 0.8);
             
-            // Стрела
-            ctx.fillStyle = '#2F4F4F';
-            ctx.fillRect(x + 5, 20, 5, 30);
+            // Башня
+            ctx.fillStyle = '#34495E';
+            ctx.fillRect(x - 8, CELL_SIZE * 0.8, 16, CELL_SIZE * 2.5);
             
-            // Насос
-            ctx.fillStyle = '#808080';
-            ctx.fillRect(x - 5, 50, 20, 15);
+            // Буровая установка
+            ctx.fillStyle = '#E74C3C';
+            ctx.fillRect(x - rigWidth/3, CELL_SIZE * 3.3, rigWidth * 0.7, CELL_SIZE * 0.6);
+            
+            // Трос
+            ctx.strokeStyle = '#7F8C8D';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x, CELL_SIZE * 3.6);
+            ctx.lineTo(drillPosition.x * CELL_SIZE + CELL_SIZE/2, drillPosition.y * CELL_SIZE);
+            ctx.stroke();
         }
 
         // Рисуем путь бура
         function drawDrillPath() {
             if (drillPath.length < 2) return;
             
-            ctx.strokeStyle = COLORS.path;
-            ctx.lineWidth = 3;
+            // Эффект свечения
+            ctx.strokeStyle = drillPower >= 50 ? COLORS.pathGlow : '#FF4444';
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
             ctx.beginPath();
             
-            drillPath.forEach((point, index) => {
+            for (let i = 0; i < drillPath.length; i++) {
+                const point = drillPath[i];
                 const screenX = point.x * CELL_SIZE + CELL_SIZE / 2;
                 const screenY = point.y * CELL_SIZE + CELL_SIZE / 2;
                 
-                if (index === 0) {
+                if (i === 0) {
                     ctx.moveTo(screenX, screenY);
                 } else {
                     ctx.lineTo(screenX, screenY);
                 }
-            });
+            }
+            ctx.stroke();
             
+            // Основная линия
+            ctx.strokeStyle = COLORS.path;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            
+            for (let i = 0; i < drillPath.length; i++) {
+                const point = drillPath[i];
+                const screenX = point.x * CELL_SIZE + CELL_SIZE / 2;
+                const screenY = point.y * CELL_SIZE + CELL_SIZE / 2;
+                
+                if (i === 0) {
+                    ctx.moveTo(screenX, screenY);
+                } else {
+                    ctx.lineTo(screenX, screenY);
+                }
+            }
             ctx.stroke();
         }
 
-        // Движение бура
+        // Движение бура с разрушением камней
         function moveDrill(dx, dy) {
             if (gameState !== 'drilling') return;
             
@@ -281,9 +712,33 @@
             }
             
             // Проверка на камень
-            if (stones.some(stone => stone.x === newX && stone.y === newY)) {
-                gameState = 'failed';
-                showMessage('💥 Вы попали в камень! Игра окончена.', 'error');
+            const stoneIndex = stones.findIndex(stone => stone.x === newX && stone.y === newY);
+            if (stoneIndex !== -1) {
+                const stone = stones[stoneIndex];
+                stone.health--;
+                
+                // Сообщение о разрушении
+                showMessage(`💥 БУР РАЗРУШАЕТ КАМЕНЬ! Здоровье: ${stone.health}`, '');
+                
+                if (stone.health <= 0) {
+                    // Камень разрушен
+                    stones.splice(stoneIndex, 1);
+                    destroyedStones++;
+                    showMessage(`✅ КАМЕНЬ РАЗРУШЕН! Всего: ${destroyedStones}`, 'success');
+                }
+                
+                // Уменьшение мощности
+                drillPower = Math.max(0, drillPower - 8);
+                
+                if (drillPower <= 0) {
+                    gameState = 'failed';
+                    showMessage('💀 БУР СЛОМАЛСЯ! Не хватило мощности!', 'error');
+                    updateStats();
+                    drawGame();
+                    return;
+                }
+                
+                updateStats();
                 drawGame();
                 return;
             }
@@ -291,18 +746,20 @@
             // Проверка достижения нефти
             if (newY >= oilLake.y) {
                 gameState = 'success';
-                showMessage('🎉 Нефть найдена! Вы победили!', 'success');
+                showMessage('🎉 НЕФТЬ НАЙДЕНА! УРОВЕНЬ ПРОЙДЕН!', 'success');
                 drillPath.push({ x: newX, y: newY });
+                updateStats();
                 drawGame();
                 showSuccessMessage();
                 return;
             }
             
-            // Обновление позиции
+            // Обычное движение
             drillPosition.x = newX;
             drillPosition.y = newY;
             drillPath.push({ x: newX, y: newY });
             
+            updateStats();
             drawGame();
         }
 
@@ -316,22 +773,10 @@
             if (gameState !== 'drilling') return;
             
             switch(e.key) {
-                case 'ArrowUp':
-                    e.preventDefault();
-                    moveDrill(0, -1);
-                    break;
-                case 'ArrowDown':
-                    e.preventDefault();
-                    moveDrill(0, 1);
-                    break;
-                case 'ArrowLeft':
-                    e.preventDefault();
-                    moveDrill(-1, 0);
-                    break;
-                case 'ArrowRight':
-                    e.preventDefault();
-                    moveDrill(1, 0);
-                    break;
+                case 'ArrowUp': moveDrill(0, -1); break;
+                case 'ArrowDown': moveDrill(0, 1); break;
+                case 'ArrowLeft': moveDrill(-1, 0); break;
+                case 'ArrowRight': moveDrill(1, 0); break;
             }
         });
 
@@ -346,6 +791,8 @@
             if (gameState === 'idle') {
                 gameState = 'drilling';
                 startBtn.disabled = true;
+                showMessage('БУРЕНИЕ НАЧАТО! Бур может разрушать камни!', '');
+                updateStats();
             }
         }
 
@@ -355,8 +802,14 @@
             startBtn.disabled = false;
         }
 
-        // Запуск игры при загрузке
-        window.onload = initGame;
+        // Запуск игры
+        window.onload = function() {
+            resizeCanvas();
+            initGame();
+            showMessage('СИСТЕМА ГОТОВА! Нажми "НАЧАТЬ БУРЕНИЕ"', '');
+        };
+
+        window.addEventListener('resize', resizeCanvas);
     </script>
 </body>
 </html>
