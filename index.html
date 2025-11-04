@@ -504,7 +504,7 @@
                         </div>
                         <div class="stat">
                             <span>Статус:</span>
-                            <span id="statusValue" class="stat-value">Готов</span>
+                            <span id="statusValue" class="stat-value">Бурение...</span>
                         </div>
                     </div>
                 </div>
@@ -526,11 +526,10 @@
                 </div>
                 
                 <div class="controls">
-                    <button class="control-btn" onclick="startDrilling()" id="startBtn">▶ НАЧАТЬ БУРЕНИЕ</button>
                     <button class="control-btn" onclick="resetGame()" id="resetBtn">🔄 НОВАЯ ИГРА</button>
                 </div>
                 
-                <div class="message" id="message">Готов к бурению! Бур может разрушать камни!</div>
+                <div class="message" id="message">Бурение начато! Используй стрелки для управления!</div>
                 
                 <div class="instructions">
                     <h4>🎮 УПРАВЛЕНИЕ</h4>
@@ -546,7 +545,6 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const messageEl = document.getElementById('message');
-        const startBtn = document.getElementById('startBtn');
         const resetBtn = document.getElementById('resetBtn');
         const successMessageEl = document.getElementById('successMessage');
         const depthValueEl = document.getElementById('depthValue');
@@ -592,7 +590,10 @@
             gameWrapper.classList.remove('hidden');
             resizeCanvas();
             initGame();
-            showMessage('Готов к бурению! Нажми "НАЧАТЬ БУРЕНИЕ"', '');
+            // Автоматически начинаем бурение
+            gameState = 'drilling';
+            showMessage('Бурение начато! Используй стрелки для управления!', '');
+            updateStats();
         }
 
         // Размеры холста
@@ -951,20 +952,13 @@
             messageEl.className = `message ${type}`;
         }
 
-        // Начать бурение
-        function startDrilling() {
-            if (gameState === 'idle') {
-                gameState = 'drilling';
-                startBtn.disabled = true;
-                showMessage('БУРЕНИЕ НАЧАТО! Бур может разрушать камни!', '');
-                updateStats();
-            }
-        }
-
         // Сброс игры
         function resetGame() {
             initGame();
-            startBtn.disabled = false;
+            // Автоматически начинаем бурение после сброса
+            gameState = 'drilling';
+            showMessage('Новая игра! Бурение начато!', '');
+            updateStats();
         }
 
         // Обработчик изменения размера окна
